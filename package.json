@@ -1,5 +1,5 @@
 {
-  "name": "vue-time-date-range-picker",
+  "name": "vue-time-date-range-picker-vue3",
   "version": "1.4.0",
   "description": "a vue time date range picker",
   "keywords": [
@@ -23,18 +23,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/limbara/vue-time-date-range-picker.git"
+    "url": "git+https://github.com/niuage/vue-time-date-range-picker.git"
   },
   "files": [
     "src",
     "dist"
   ],
   "author": "Nico Limbara <nick_dev@yahoo.com>",
+  "contributors": [
+    "Robin Boutros <robin@devpost.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/limbara/vue-time-date-range-picker/issues"
+    "url": "https://github.com/niuage/vue-time-date-range-picker/issues"
   },
-  "homepage": "https://github.com/limbara/vue-time-date-range-picker#readme",
+  "homepage": "https://github.com/niuage/vue-time-date-range-picker#readme",
   "private": false,
   "jest": {
     "coverageDirectory": "./test/unit/coverage/",
