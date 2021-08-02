@@ -37,67 +37,76 @@
         <span>{{ switchButtonLabel }}</span>
         <switch-button :checked="isAllDay" @on-check-change="onCheckChange" />
       </div>
-      <div class="vdpr-datepicker__calendar-input-wrapper">
-        <span>{{ dateInput.labelStarts }}</span>
-        <calendar-input-date
-          :format="dateInput.format"
-          :inputClass="dateInput.inputClass"
-          :timestamp="unixSelectedStartDate"
-          :language="language"
-          @on-change="onStartInputDateChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime">
+        <div class="vdpr-datepicker__calendar-input-wrapper">
+          <span>{{ dateInput.labelStarts }}</span>
+          <calendar-input-date
+            :format="dateInput.format"
+            :inputClass="dateInput.inputClass"
+            :timestamp="unixSelectedStartDate"
+            :language="language"
+            @on-change="onStartInputDateChange"
+          />
+        </div>
+        <div
+          class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
+        >
+          <calendar-input-time
+            v-show="isVisibleTimeInput"
+            :step="timeInput.step"
+            :readonly="timeInput.readonly"
+            :inputClass="timeInput.inputClass"
+            :timestamp="unixSelectedStartDate"
+            @on-change="onTimeStartInputChange"
+          />
+        </div>
       </div>
-      <div
-        class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
-      >
-        <calendar-input-time
-          v-show="isVisibleTimeInput"
-          :step="timeInput.step"
-          :readonly="timeInput.readonly"
-          :inputClass="timeInput.inputClass"
-          :timestamp="unixSelectedStartDate"
-          @on-change="onTimeStartInputChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime">
+        <div class="vdpr-datepicker__calendar-input-wrapper">
+          <span>{{ dateInput.labelEnds }}</span>
+          <calendar-input-date
+            :format="dateInput.format"
+            :inputClass="dateInput.inputClass"
+            :timestamp="unixSelectedEndDate"
+            :language="language"
+            @on-change="onEndDateInputDateChange"
+          />
+        </div>
+        <div
+          class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
+        >
+          <calendar-input-time
+            v-show="isVisibleTimeInput"
+            :step="timeInput.step"
+            :readonly="timeInput.readonly"
+            :inputClass="timeInput.inputClass"
+            :timestamp="unixSelectedEndDate"
+            @on-change="onTimeEndInputChange"
+          />
+        </div>
       </div>
-      <div class="vdpr-datepicker__calendar-input-wrapper">
-        <span>{{ dateInput.labelEnds }}</span>
-        <calendar-input-date
-          :format="dateInput.format"
-          :inputClass="dateInput.inputClass"
-          :timestamp="unixSelectedEndDate"
-          :language="language"
-          @on-change="onEndDateInputDateChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-buttons-wrapper">
+        <button
+          v-show="isVisibleButtonApply"
+          :class="[
+            'vdpr-datepicker__button',
+            'vdpr-datepicker__button--block',
+            'vdpr-datepicker__button-submit',
+          ]"
+          @click="onClickButtonApply"
+        >{{ applyButtonLabel }}</button>
+        <button
+          :class="[
+            'vdpr-datepicker__button',
+            'vdpr-datepicker__button--block',
+            'vdpr-datepicker__button-reset',
+          ]"
+          @click="onClickButtonReset"
+        >{{ resetButtonLabel }}</button>
       </div>
-      <div
-        class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
-      >
-        <calendar-input-time
-          v-show="isVisibleTimeInput"
-          :step="timeInput.step"
-          :readonly="timeInput.readonly"
-          :inputClass="timeInput.inputClass"
-          :timestamp="unixSelectedEndDate"
-          @on-change="onTimeEndInputChange"
-        />
-      </div>
-      <button
-        v-show="isVisibleButtonApply"
-        :class="[
-          'vdpr-datepicker__button',
-          'vdpr-datepicker__button--block',
-          'vdpr-datepicker__button-submit',
-        ]"
-        @click="onClickButtonApply"
-      >{{ applyButtonLabel }}</button>
-      <button
-        :class="[
-          'vdpr-datepicker__button',
-          'vdpr-datepicker__button--block',
-          'vdpr-datepicker__button-reset',
-        ]"
-        @click="onClickButtonReset"
-      >{{ resetButtonLabel }}</button>
     </div>
   </div>
 </template>
