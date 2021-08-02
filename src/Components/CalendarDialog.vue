@@ -234,10 +234,10 @@ import { computed, ref } from 'vue';
   })
 
   const unixSelectedEndDate = computed(() => {
-    if (!selectedEndDate) {
+    if (!selectedEndDate.value) {
       return 0;
     }
-    return dateUtil.value.toUnix(selectedEndDate);
+    return dateUtil.value.toUnix(selectedEndDate.value);
   });
 
   const isVisibleTimeInput = computed(() => {

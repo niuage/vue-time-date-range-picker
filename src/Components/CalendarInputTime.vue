@@ -39,6 +39,10 @@
 
   const { timestamp } = toRefs(props);
 
+  let timestampCopy = ref(timestamp.value);
+
+  watch(timestamp, t => timestampCopy.value = t);
+
   const format = 'HH:mm';
 
   const dateUtil = computed(() => {
@@ -46,33 +50,33 @@
   });
 
   const formattedValue = computed(() => {
-    if (timestamp.value === 0) return '';
+    if (timestampCopy.value === 0) return '';
 
     return dateUtil.value.formatDate(
-      dateUtil.value.fromUnix(timestamp.value),
+      dateUtil.value.fromUnix(timestampCopy.value),
       format,
     );
   });
 
   const onClickUp = () => {
-    if (timestamp.value === 0) return false;
+    if (timestampCopy.value === 0) return false;
 
-    timestamp.value += props.step * 60;
+    timestampCopy.value += props.step * 60;
 
     return emit(
       'on-change',
-      dateUtil.value.fromUnix(timestamp.value),
+      dateUtil.value.fromUnix(timestampCopy.value),
     );
   };
 
   const onClickDown = () => {
-    if (timestamp.value === 0) return false;
+    if (timestampCopy.value === 0) return false;
 
-    timestamp.value -= props.step * 60;
+    timestampCopy.value -= props.step * 60;
 
     return emit(
       'on-change',
-      dateUtil.value.fromUnix(timestamp.value),
+      dateUtil.value.fromUnix(timestampCopy.value),
     );
   };
 
@@ -88,7 +92,7 @@
 
     const totalMinutes = hours * 60 + minutes;
     const startOfDate = dateUtil.value.startOf(
-      dateUtil.value.fromUnix(timestamp.value),
+      dateUtil.value.fromUnix(timestampCopy.value),
       'd',
     );
     const date = dateUtil.value.add(startOfDate, totalMinutes, 'm');
