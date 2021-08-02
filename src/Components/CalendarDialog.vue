@@ -33,7 +33,7 @@
       @on-next-calendar="onNextCalendar"
     />
     <div class="vdpr-datepicker__calendar-actions">
-      <div class="vdpr-datepicker__calendar-input-wrapper">
+      <div class="vdpr-datepicker__calendar-input-wrapper" v-if="showAllDayToggle">
         <span>{{ switchButtonLabel }}</span>
         <switch-button :checked="isAllDay" @on-check-change="onCheckChange" />
       </div>
@@ -167,6 +167,10 @@ import { computed, ref } from 'vue';
           readonly: false,
         };
       },
+    },
+    showAllDayToggle: {
+      type: Boolean,
+      default: false,
     },
     switchButtonLabel: {
       type: String,
