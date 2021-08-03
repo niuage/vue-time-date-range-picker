@@ -66,14 +66,14 @@ import { computed, toRefs, ref } from 'vue';
     },
     format: {
       type: String,
-      default: 'DD/MM/YYYY HH:mm',
+      default: 'MM/DD/YYYY HH:mm',
     },
     sameDateFormat: {
       type: Object,
       validator: PropsValidator.isValidSameDateFormat,
       default() {
         return {
-          from: 'DD/MM/YYYY, HH:mm',
+          from: 'MM/DD/YYYY, HH:mm',
           to: 'HH:mm',
         };
       },
