@@ -176,7 +176,7 @@ import { computed, ref } from 'vue';
           labelStarts: 'Starts',
           labelEnds: 'Ends',
           inputClass: null,
-          format: 'DD/MM/YYYY',
+          format: 'MM/DD/YYYY',
           readonly: false,
         };
       },
