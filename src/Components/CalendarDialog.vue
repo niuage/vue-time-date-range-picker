@@ -92,6 +92,8 @@
         <button
           v-show="isVisibleButtonApply"
           :class="[
+            'button',
+            'is-primary',
             'vdpr-datepicker__button',
             'vdpr-datepicker__button--block',
             'vdpr-datepicker__button-submit',
@@ -100,6 +102,8 @@
         >{{ applyButtonLabel }}</button>
         <button
           :class="[
+            'button',
+            'is-danger',
             'vdpr-datepicker__button',
             'vdpr-datepicker__button--block',
             'vdpr-datepicker__button-reset',
