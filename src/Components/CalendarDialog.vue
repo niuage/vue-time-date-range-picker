@@ -215,6 +215,7 @@ import { computed, ref, toRefs, watch } from 'vue';
     'select-date',
     'select-disabled-date',
     'on-apply',
+    'update:applyChanges',
     'on-reset',
     'on-prev-calendar',
     'on-next-calendar'
