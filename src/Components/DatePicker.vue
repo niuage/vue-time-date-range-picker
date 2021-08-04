@@ -155,7 +155,8 @@ import { computed, toRefs, ref } from 'vue';
     'select-date',
     'datepicker-opened',
     'datepicker-closed',
-    'date-applied'
+    'date-applied',
+    'update:showCalendarDialog'
   ]);
 
   const datePickerClosed = () => emit('datepicker-closed');
