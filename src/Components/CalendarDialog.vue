@@ -123,7 +123,7 @@ import SwitchButton from './SwitchButton.vue';
 import CalendarInputDate from './CalendarInputDate.vue';
 import CalendarInputTime from './CalendarInputTime.vue';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 
   const props = defineProps({
     inline: {
@@ -236,7 +236,8 @@ import { computed, ref, watch } from 'vue';
     }
   }
 
-  watch(props.applyChanges, (shouldApply) => {
+  const { applyChanges } = toRefs(props);
+  watch(applyChanges, (shouldApply) => {
     if (!shouldApply) return;
 
     onApplyChanges();
