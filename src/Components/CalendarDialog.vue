@@ -123,7 +123,7 @@ import SwitchButton from './SwitchButton.vue';
 import CalendarInputDate from './CalendarInputDate.vue';
 import CalendarInputTime from './CalendarInputTime.vue';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
   const props = defineProps({
     inline: {
@@ -205,6 +205,10 @@ import { computed, ref } from 'vue';
       type: Boolean,
       default: false,
     },
+    applyChanges: {
+      type: Boolean,
+      default: false
+    }
   });
 
   const emit = defineEmit([
@@ -231,6 +235,12 @@ import { computed, ref } from 'vue';
       isAllDay.value = false;
     }
   }
+
+  watch(props.applyChanges, (shouldApply) => {
+    if (!shouldApply) return;
+
+    onApplyChanges();
+  })
 
   const selectedStartDate = ref(from ?? null);
   const selectedEndDate = ref(to ?? null);
@@ -264,7 +274,6 @@ import { computed, ref } from 'vue';
   const isVisibleButtonApply = computed(() => {
     return !props.inline;
   });
-
 
   // Methods
 
@@ -310,9 +319,12 @@ import { computed, ref } from 'vue';
     emitOnApplyIfInline();
   }
 
-  const onClickButtonApply = () => {
+  const onApplyChanges = () => {
     emit('on-apply', selectedStartDate.value, selectedEndDate.value);
+    emit('update:applyChanges', false);
   }
+
+  const onClickButtonApply = () => onApplyChanges();
 
   const onClickButtonReset = () => {
     selectedStartDate.value = null;

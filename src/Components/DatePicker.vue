@@ -17,6 +17,7 @@
     />
     <calendar-dialog
       v-show="showCalendarDialog"
+      v-model:applyChanges="applyChanges"
       :language="language"
       :inline="inline"
       :initialDates="initialDates"
@@ -46,7 +47,7 @@ import DateUtil from '../Utils/DateUtil';
 import DateInput from './DateInput.vue';
 import CalendarDialog from './CalendarDialog.vue';
 
-import { computed, toRefs, ref } from 'vue';
+import { computed, toRefs, ref, watch } from 'vue';
 
   const props = defineProps({
     initialDates: {
@@ -102,12 +103,13 @@ import { computed, toRefs, ref } from 'vue';
 
   const { inline } = toRefs(props);
   const showCalendarDialog = computed({
-    get: () => {
-      if (props.inline) return false;
-
-      return props.showCalendarDialog;
-    },
+    get: () => props.inline ? false : props.showCalendarDialog,
     set: (value) => emit("update:showCalendarDialog", value)
+  });
+
+  const applyChanges = ref(false);
+  watch(showCalendarDialog, (show) => {
+    if (!show) applyChanges.value = true;
   })
 
   const [fromDate, toDate] = props.initialDates;
@@ -116,7 +118,6 @@ import { computed, toRefs, ref } from 'vue';
 
   const dateUtil = computed(() => new DateUtil(props.language));
   const showingDateInput = computed(() => !props.inline);
-  // const showingCalendarDialog = computed(() => showCalendarDialog.value || props.inline);
 
   const onApply = (date1, date2) => {
     if (!date1 || !date2) return false;
