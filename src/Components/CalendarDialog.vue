@@ -268,7 +268,6 @@ import { computed, ref } from 'vue';
 
   // Methods
 
-
   const onCheckChange = (check) => {
     isAllDay.value = check;
     if (!selectedStartDate.value || !selectedEndDate.value) return;

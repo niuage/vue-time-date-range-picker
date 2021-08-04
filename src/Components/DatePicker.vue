@@ -16,7 +16,7 @@
       @on-click="onClickDateInput"
     />
     <calendar-dialog
-      v-show="showingCalendarDialog"
+      v-show="showCalendarDialog"
       :language="language"
       :inline="inline"
       :initialDates="initialDates"
@@ -55,6 +55,10 @@ import { computed, toRefs, ref } from 'vue';
       default() {
         return [];
       },
+    },
+    showCalendarDialog: {
+      type: Boolean,
+      default: false
     },
     inline: {
       type: Boolean,
@@ -97,7 +101,14 @@ import { computed, toRefs, ref } from 'vue';
   });
 
   const { inline } = toRefs(props);
-  const showCalendarDialog = ref(inline.value);
+  const showCalendarDialog = computed({
+    get: () => {
+      if (props.inline) return false;
+
+      return props.showCalendarDialog;
+    },
+    set: (value) => emit("update:showCalendarDialog", value)
+  })
 
   const [fromDate, toDate] = props.initialDates;
   const selectedStartDate = ref(fromDate ?? null);
@@ -105,7 +116,7 @@ import { computed, toRefs, ref } from 'vue';
 
   const dateUtil = computed(() => new DateUtil(props.language));
   const showingDateInput = computed(() => !props.inline);
-  const showingCalendarDialog = computed(() => showCalendarDialog.value || props.inline);
+  // const showingCalendarDialog = computed(() => showCalendarDialog.value || props.inline);
 
   const onApply = (date1, date2) => {
     if (!date1 || !date2) return false;
