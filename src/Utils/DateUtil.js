@@ -71,10 +71,6 @@ export default class {
     return new Date(moment(date).format(`${format} UTC`))
   }
 
-  toUTCWithHour(date, format) {
-    return new Date(moment(date).format(`${format} HH:mm:ss UTC`))
-  }
-
   /**
    * check for same date only
    *
@@ -107,10 +103,6 @@ export default class {
       && moment(toDate).format('DD MM YYYY HH:mm')
       === endToDate.format('DD MM YYYY HH:mm')
     );
-  }
-
-  convertTZ(date, tzString) {
-    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
   }
 
   /**
