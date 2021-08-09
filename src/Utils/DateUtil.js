@@ -12,16 +12,6 @@ export default class {
   }
 
   /**
-   * Create Date
-   * @returns {Date}
-   */
-  createDate(...param) {
-    return moment(...param)
-      .locale(this.lang)
-      .toDate();
-  }
-
-  /**
    * Get Day Names
    *
    * @returns {Array}
@@ -64,10 +54,25 @@ export default class {
    * @returns {String}
    */
   // eslint-disable-next-line class-methods-use-this
+  formatUTCDate(date, format) {
+    return moment(date)
+      .locale(this.lang)
+      .utc()
+      .format(format);
+  }
+
   formatDate(date, format) {
     return moment(date)
       .locale(this.lang)
       .format(format);
+  }
+
+  toUTC(date, format) {
+    return new Date(moment(date).format(`${format} UTC`))
+  }
+
+  toUTCWithHour(date, format) {
+    return new Date(moment(date).format(`${format} HH:mm:ss UTC`))
   }
 
   /**
@@ -102,6 +107,10 @@ export default class {
       && moment(toDate).format('DD MM YYYY HH:mm')
       === endToDate.format('DD MM YYYY HH:mm')
     );
+  }
+
+  convertTZ(date, tzString) {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
   }
 
   /**

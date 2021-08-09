@@ -3,6 +3,7 @@
     <input
       class="vdpr-datepicker__calendar-input-time-elem"
       type="text"
+      name="time-input"
       :class="inputClass"
       :value="formattedValue"
       :readonly="readonly"
@@ -32,6 +33,7 @@
     readonly: Boolean,
     timestamp: Number,
     language: String,
+    format: String,
     step: Number,
   });
 
@@ -52,7 +54,7 @@
   const formattedValue = computed(() => {
     if (timestampCopy.value === 0) return '';
 
-    return dateUtil.value.formatDate(
+    return dateUtil.value.formatUTCDate(
       dateUtil.value.fromUnix(timestampCopy.value),
       format,
     );
@@ -95,7 +97,8 @@
       dateUtil.value.fromUnix(timestampCopy.value),
       'd',
     );
-    const date = dateUtil.value.add(startOfDate, totalMinutes, 'm');
+    const utcStartOfDate = dateUtil.value.toUTC(startOfDate, props.format);
+    const date = dateUtil.value.add(utcStartOfDate, totalMinutes, 'm');
 
     return emit('on-change', date);
   };

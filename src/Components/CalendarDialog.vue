@@ -23,6 +23,7 @@
     </div>
     <calendar
       :language="language"
+      :format="dateInput.format"
       :selectedStartDate="selectedStartDate"
       :selectedEndDate="selectedEndDate"
       :disabledDates="disabledDates"
@@ -38,7 +39,7 @@
         <switch-button :checked="isAllDay" @on-check-change="onCheckChange" />
       </div>
 
-      <div class="vdpr-datepicker__calendar-input-wrapper-datetime">
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime" id="vdpr-start-date-wrapper">
         <div class="vdpr-datepicker__calendar-input-wrapper">
           <span>{{ dateInput.labelStarts }}</span>
           <calendar-input-date
@@ -54,6 +55,7 @@
         >
           <calendar-input-time
             v-show="isVisibleTimeInput"
+            :format="dateInput.format"
             :step="timeInput.step"
             :readonly="timeInput.readonly"
             :inputClass="timeInput.inputClass"
@@ -63,7 +65,7 @@
         </div>
       </div>
 
-      <div class="vdpr-datepicker__calendar-input-wrapper-datetime">
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime" id="vdpr-end-date-wrapper">
         <div class="vdpr-datepicker__calendar-input-wrapper">
           <span>{{ dateInput.labelEnds }}</span>
           <calendar-input-date
@@ -79,6 +81,7 @@
         >
           <calendar-input-time
             v-show="isVisibleTimeInput"
+            :format="dateInput.format"
             :step="timeInput.step"
             :readonly="timeInput.readonly"
             :inputClass="timeInput.inputClass"
@@ -238,8 +241,8 @@ import { computed, ref, toRefs, watch } from 'vue';
   }
 
   const { applyChanges } = toRefs(props);
-  watch(applyChanges, (shouldApply) => {
-    if (!shouldApply) return;
+  watch(applyChanges, (shouldApplyChanges) => {
+    if (!shouldApplyChanges) return;
 
     onApplyChanges();
   })
@@ -336,6 +339,10 @@ import { computed, ref, toRefs, watch } from 'vue';
     emit('on-reset');
   }
 
+  // Prevents the first date selected by the user to be the 'end date' rather than the 'start date'
+  // when the initial selection is not a range but a single day.
+  let hasSelectedDate = false;
+
   const selectDate = (date) => {
     let startDate = selectedStartDate.value;
     let endDate = selectedEndDate.value;
@@ -343,12 +350,15 @@ import { computed, ref, toRefs, watch } from 'vue';
       dateUtil.value.isValidDate(startDate)
       && dateUtil.value.isValidDate(endDate)
       && dateUtil.value.isSameDate(startDate, endDate)
+      && hasSelectedDate
     ) {
       endDate = date;
     } else {
       startDate = date;
       endDate = date;
     }
+
+    hasSelectedDate = true;
 
     applyOrSwapApply(startDate, endDate);
 

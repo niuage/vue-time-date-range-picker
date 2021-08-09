@@ -47,12 +47,12 @@
     if (
       dateUtil.value.isSameDate(props.selectedStartDate, props.selectedEndDate)
     ) {
-      const date1 = dateUtil.value.formatDate(
+      const date1 = dateUtil.value.formatUTCDate(
         props.selectedStartDate,
         props.sameDateFormat.from,
       );
 
-      const date2 = dateUtil.value.formatDate(
+      const date2 = dateUtil.value.formatUTCDate(
         props.selectedEndDate,
         props.sameDateFormat.to,
       );
@@ -60,12 +60,12 @@
       return `${date1} - ${date2}`;
     }
 
-    const date1 = dateUtil.value.formatDate(
+    const date1 = dateUtil.value.formatUTCDate(
       props.selectedStartDate,
       props.format,
     );
 
-    const date2 = dateUtil.value.formatDate(props.selectedEndDate, props.format);
+    const date2 = dateUtil.value.formatUTCDate(props.selectedEndDate, props.format);
 
     return `${date1} - ${date2}`;
   });

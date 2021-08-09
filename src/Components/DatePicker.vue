@@ -109,6 +109,7 @@ import { computed, toRefs, ref, watch } from 'vue';
 
   const applyChanges = ref(false);
   watch(showCalendarDialog, (show) => {
+    // apply changes on close
     if (!show) applyChanges.value = true;
   })
 

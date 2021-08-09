@@ -3,6 +3,7 @@
     <input
       class="vdpr-datepicker__calendar-input-date-elem"
       type="text"
+      name="date-input"
       :class="inputClass"
       :value="formattedValue"
       @change="onChange"
@@ -34,14 +35,14 @@
 
     const date = dateUtil.value.fromUnix(timestamp.value);
 
-    return dateUtil.value.formatDate(date, props.format);
+    return dateUtil.value.formatUTCDate(date, props.format);
   });
 
 
   const onChange = (e) => {
-    const lastDate = dateUtil.value.fromUnix(timestamp.value);
-    const lastTime = dateUtil.value.formatDate(lastDate, 'HH:mm:ss');
-    const date = dateUtil.value.createDate(`${e.target.value} ${lastTime}`, `${props.format} HH:mm:ss`);
+    const previousDate = dateUtil.value.fromUnix(timestamp.value);
+    const previousTime = dateUtil.value.formatUTCDate(previousDate, 'HH:mm:ss');
+    const date = new Date(`${e.target.value} ${previousTime} UTC`)
 
     if (!dateUtil.value.isValidDate(date)) {
       return false;
