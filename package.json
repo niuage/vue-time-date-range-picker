@@ -44,5 +44,7 @@
     "moment": "^2.27.0",
     "vue": "^3.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vue-time-date-range-picker-vue3": "1.4.15"
+  }
 }
