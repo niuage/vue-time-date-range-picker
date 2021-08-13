@@ -140,6 +140,9 @@ import { computed, ref, toRefs, watch } from 'vue';
         return [];
       },
     },
+    format: {
+      type: String
+    },
     language: {
       type: String,
       default: 'en',
@@ -183,6 +186,9 @@ import { computed, ref, toRefs, watch } from 'vue';
           readonly: false,
         };
       },
+    },
+    defaultTimes: {
+      type: Object
     },
     showAllDayToggle: {
       type: Boolean,
@@ -280,6 +286,14 @@ import { computed, ref, toRefs, watch } from 'vue';
     return !props.inline;
   });
 
+  const defaultStartTime = computed(() => {
+    return dateUtil.value.formattedHourToSeconds(props.defaultTimes.start);
+  });
+
+  const defaultEndTime = computed(() => {
+    return dateUtil.value.formattedHourToSeconds(props.defaultTimes.end);
+  });
+
   // Methods
 
   const onCheckChange = (check) => {
@@ -344,23 +358,36 @@ import { computed, ref, toRefs, watch } from 'vue';
   let hasSelectedDate = false;
 
   const selectDate = (date) => {
+    let selectingEndDate = false;
+
     let startDate = selectedStartDate.value;
     let endDate = selectedEndDate.value;
+
     if (
       dateUtil.value.isValidDate(startDate)
       && dateUtil.value.isValidDate(endDate)
       && dateUtil.value.isSameDate(startDate, endDate)
       && hasSelectedDate
     ) {
+      const endDateBeforeStartDate = dateUtil.value.isSameOrBefore(date, selectedStartDate.value);
       endDate = date;
+      applyOrSwapApply(startDate, endDate);
+
+      selectedStartDate.value = dateUtil.value.UTCstartOf(selectedStartDate.value, 'd', props.format);
+      selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
+
+      selectedEndDate.value = dateUtil.value.UTCstartOf(selectedEndDate.value, 'd', props.format);
+      selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
     } else {
       startDate = date;
       endDate = date;
+      applyOrSwapApply(startDate, endDate);
+
+      selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
+      selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
     }
 
     hasSelectedDate = true;
-
-    applyOrSwapApply(startDate, endDate);
 
     if (isAllDay.value) {
       selectedStartDate.value = dateUtil.value.startOf(

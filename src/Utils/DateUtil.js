@@ -154,6 +154,23 @@ export default class {
   }
 
   /**
+   * Get Start Of A Date in UTC time zone. refer to moment documentation
+   *
+   * @param {Date} date
+   * @param {String} of
+   * @returns {Date}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  UTCstartOf(date, of, format) {
+    const startOf = moment(date)
+      .locale(this.lang)
+      .startOf(of)
+      .toDate();
+
+    return this.toUTC(startOf, format);
+  }
+
+  /**
    * Get End Of A Date. refer to moment documentation
    *
    * @param {Date} date
@@ -313,5 +330,12 @@ export default class {
   // eslint-disable-next-line class-methods-use-this
   year(date) {
     return moment(date).year();
+  }
+
+  formattedHourToSeconds(time) {
+    if (!time) return 0;
+
+    const [hours, minutes] = time.split(":");
+    return (+hours) * 3600 + (+minutes) * 60;
   }
 }

@@ -18,9 +18,11 @@
     <calendar-dialog
       v-show="showCalendarDialog"
       v-model:applyChanges="applyChanges"
+      :format="format"
       :language="language"
       :inline="inline"
       :initialDates="initialDates"
+      :defaultTimes="defaultTimes"
       :disabledDates="disabledDates"
       :showHelperButtons="showHelperButtons"
       :helperButtons="helperButtons"
@@ -88,6 +90,16 @@ import { computed, toRefs, ref, watch } from 'vue';
       default() {
         return {};
       },
+    },
+    defaultTimes: {
+      type: Object,
+      validator: PropsValidator.isValidTimeFormat,
+      default() {
+        return {
+          start: '0:00',
+          end: '0:00'
+        }
+      }
     },
     disabledDates: Object,
     showHelperButtons: Boolean,
