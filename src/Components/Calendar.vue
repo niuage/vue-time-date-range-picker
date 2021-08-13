@@ -66,6 +66,7 @@
     language: String,
     disabledDates: Object,
     isMondayFirst: Boolean,
+    format: String
   });
 
   const emit = defineEmit(['select-disabled-date', 'select-date', 'on-prev-calendar', 'on-next-calendar']);
@@ -230,7 +231,7 @@
       emit('select-disabled-date', day.date);
     }
 
-    return emit('select-date', day.date);
+    return emit('select-date', day.date, props.format);
   };
 
   const onPrevClick = () => {

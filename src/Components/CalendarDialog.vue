@@ -23,6 +23,7 @@
     </div>
     <calendar
       :language="language"
+      :format="dateInput.format"
       :selectedStartDate="selectedStartDate"
       :selectedEndDate="selectedEndDate"
       :disabledDates="disabledDates"
@@ -33,71 +34,86 @@
       @on-next-calendar="onNextCalendar"
     />
     <div class="vdpr-datepicker__calendar-actions">
-      <div class="vdpr-datepicker__calendar-input-wrapper">
+      <div class="vdpr-datepicker__calendar-input-wrapper" v-if="showAllDayToggle">
         <span>{{ switchButtonLabel }}</span>
         <switch-button :checked="isAllDay" @on-check-change="onCheckChange" />
       </div>
-      <div class="vdpr-datepicker__calendar-input-wrapper">
-        <span>{{ dateInput.labelStarts }}</span>
-        <calendar-input-date
-          :format="dateInput.format"
-          :inputClass="dateInput.inputClass"
-          :timestamp="unixSelectedStartDate"
-          :language="language"
-          @on-change="onStartInputDateChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime" id="vdpr-start-date-wrapper">
+        <div class="vdpr-datepicker__calendar-input-wrapper">
+          <span>{{ dateInput.labelStarts }}</span>
+          <calendar-input-date
+            :format="dateInput.format"
+            :inputClass="dateInput.inputClass"
+            :timestamp="unixSelectedStartDate"
+            :language="language"
+            @on-change="onStartInputDateChange"
+          />
+        </div>
+        <div
+          class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
+        >
+          <calendar-input-time
+            v-show="isVisibleTimeInput"
+            :format="dateInput.format"
+            :step="timeInput.step"
+            :readonly="timeInput.readonly"
+            :inputClass="timeInput.inputClass"
+            :timestamp="unixSelectedStartDate"
+            @on-change="onTimeStartInputChange"
+          />
+        </div>
       </div>
-      <div
-        class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
-      >
-        <calendar-input-time
-          v-show="isVisibleTimeInput"
-          :step="timeInput.step"
-          :readonly="timeInput.readonly"
-          :inputClass="timeInput.inputClass"
-          :timestamp="unixSelectedStartDate"
-          @on-change="onTimeStartInputChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-input-wrapper-datetime" id="vdpr-end-date-wrapper">
+        <div class="vdpr-datepicker__calendar-input-wrapper">
+          <span>{{ dateInput.labelEnds }}</span>
+          <calendar-input-date
+            :format="dateInput.format"
+            :inputClass="dateInput.inputClass"
+            :timestamp="unixSelectedEndDate"
+            :language="language"
+            @on-change="onEndDateInputDateChange"
+          />
+        </div>
+        <div
+          class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
+        >
+          <calendar-input-time
+            v-show="isVisibleTimeInput"
+            :format="dateInput.format"
+            :step="timeInput.step"
+            :readonly="timeInput.readonly"
+            :inputClass="timeInput.inputClass"
+            :timestamp="unixSelectedEndDate"
+            @on-change="onTimeEndInputChange"
+          />
+        </div>
       </div>
-      <div class="vdpr-datepicker__calendar-input-wrapper">
-        <span>{{ dateInput.labelEnds }}</span>
-        <calendar-input-date
-          :format="dateInput.format"
-          :inputClass="dateInput.inputClass"
-          :timestamp="unixSelectedEndDate"
-          :language="language"
-          @on-change="onEndDateInputDateChange"
-        />
+
+      <div class="vdpr-datepicker__calendar-buttons-wrapper">
+        <button
+          v-show="isVisibleButtonApply"
+          :class="[
+            'button',
+            'is-primary',
+            'vdpr-datepicker__button',
+            'vdpr-datepicker__button--block',
+            'vdpr-datepicker__button-submit',
+          ]"
+          @click="onClickButtonApply"
+        >{{ applyButtonLabel }}</button>
+        <button
+          :class="[
+            'button',
+            'is-danger',
+            'vdpr-datepicker__button',
+            'vdpr-datepicker__button--block',
+            'vdpr-datepicker__button-reset',
+          ]"
+          @click="onClickButtonReset"
+        >{{ resetButtonLabel }}</button>
       </div>
-      <div
-        class="vdpr-datepicker__calendar-input-wrapper vdpr-datepicker__calendar-input-wrapper--end"
-      >
-        <calendar-input-time
-          v-show="isVisibleTimeInput"
-          :step="timeInput.step"
-          :readonly="timeInput.readonly"
-          :inputClass="timeInput.inputClass"
-          :timestamp="unixSelectedEndDate"
-          @on-change="onTimeEndInputChange"
-        />
-      </div>
-      <button
-        v-show="isVisibleButtonApply"
-        :class="[
-          'vdpr-datepicker__button',
-          'vdpr-datepicker__button--block',
-          'vdpr-datepicker__button-submit',
-        ]"
-        @click="onClickButtonApply"
-      >{{ applyButtonLabel }}</button>
-      <button
-        :class="[
-          'vdpr-datepicker__button',
-          'vdpr-datepicker__button--block',
-          'vdpr-datepicker__button-reset',
-        ]"
-        @click="onClickButtonReset"
-      >{{ resetButtonLabel }}</button>
     </div>
   </div>
 </template>
@@ -110,7 +126,7 @@ import SwitchButton from './SwitchButton.vue';
 import CalendarInputDate from './CalendarInputDate.vue';
 import CalendarInputTime from './CalendarInputTime.vue';
 
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 
   const props = defineProps({
     inline: {
@@ -123,6 +139,9 @@ import { computed, ref } from 'vue';
       default() {
         return [];
       },
+    },
+    format: {
+      type: String
     },
     language: {
       type: String,
@@ -163,10 +182,17 @@ import { computed, ref } from 'vue';
           labelStarts: 'Starts',
           labelEnds: 'Ends',
           inputClass: null,
-          format: 'DD/MM/YYYY',
+          format: 'MM/DD/YYYY',
           readonly: false,
         };
       },
+    },
+    defaultTimes: {
+      type: Object
+    },
+    showAllDayToggle: {
+      type: Boolean,
+      default: false,
     },
     switchButtonLabel: {
       type: String,
@@ -188,12 +214,17 @@ import { computed, ref } from 'vue';
       type: Boolean,
       default: false,
     },
+    applyChanges: {
+      type: Boolean,
+      default: false
+    }
   });
 
   const emit = defineEmit([
     'select-date',
     'select-disabled-date',
     'on-apply',
+    'update:applyChanges',
     'on-reset',
     'on-prev-calendar',
     'on-next-calendar'
@@ -214,6 +245,13 @@ import { computed, ref } from 'vue';
       isAllDay.value = false;
     }
   }
+
+  const { applyChanges } = toRefs(props);
+  watch(applyChanges, (shouldApplyChanges) => {
+    if (!shouldApplyChanges) return;
+
+    onApplyChanges();
+  })
 
   const selectedStartDate = ref(from ?? null);
   const selectedEndDate = ref(to ?? null);
@@ -248,9 +286,15 @@ import { computed, ref } from 'vue';
     return !props.inline;
   });
 
+  const defaultStartTime = computed(() => {
+    return dateUtil.value.formattedHourToSeconds(props.defaultTimes.start);
+  });
+
+  const defaultEndTime = computed(() => {
+    return dateUtil.value.formattedHourToSeconds(props.defaultTimes.end);
+  });
 
   // Methods
-
 
   const onCheckChange = (check) => {
     isAllDay.value = check;
@@ -294,9 +338,12 @@ import { computed, ref } from 'vue';
     emitOnApplyIfInline();
   }
 
-  const onClickButtonApply = () => {
+  const onApplyChanges = () => {
     emit('on-apply', selectedStartDate.value, selectedEndDate.value);
+    emit('update:applyChanges', false);
   }
+
+  const onClickButtonApply = () => onApplyChanges();
 
   const onClickButtonReset = () => {
     selectedStartDate.value = null;
@@ -306,21 +353,40 @@ import { computed, ref } from 'vue';
     emit('on-reset');
   }
 
+  // Prevents the first date selected by the user to be the 'end date' rather than the 'start date'
+  // when the initial selection is not a range but a single day.
+  let hasSelectedDate = false;
+
   const selectDate = (date) => {
+    let selectingEndDate = false;
+
     let startDate = selectedStartDate.value;
     let endDate = selectedEndDate.value;
+
     if (
       dateUtil.value.isValidDate(startDate)
       && dateUtil.value.isValidDate(endDate)
       && dateUtil.value.isSameDate(startDate, endDate)
+      && hasSelectedDate
     ) {
       endDate = date;
+      applyOrSwapApply(startDate, endDate);
+
+      selectedStartDate.value = dateUtil.value.UTCstartOf(selectedStartDate.value, 'd', props.format);
+      selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
+
+      selectedEndDate.value = dateUtil.value.UTCstartOf(selectedEndDate.value, 'd', props.format);
+      selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
     } else {
       startDate = date;
       endDate = date;
+      applyOrSwapApply(startDate, endDate);
+
+      selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
+      selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
     }
 
-    applyOrSwapApply(startDate, endDate);
+    hasSelectedDate = true;
 
     if (isAllDay.value) {
       selectedStartDate.value = dateUtil.value.startOf(

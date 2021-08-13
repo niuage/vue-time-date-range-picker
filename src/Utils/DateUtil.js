@@ -12,16 +12,6 @@ export default class {
   }
 
   /**
-   * Create Date
-   * @returns {Date}
-   */
-  createDate(...param) {
-    return moment(...param)
-      .locale(this.lang)
-      .toDate();
-  }
-
-  /**
    * Get Day Names
    *
    * @returns {Array}
@@ -64,10 +54,21 @@ export default class {
    * @returns {String}
    */
   // eslint-disable-next-line class-methods-use-this
+  formatUTCDate(date, format) {
+    return moment(date)
+      .locale(this.lang)
+      .utc()
+      .format(format);
+  }
+
   formatDate(date, format) {
     return moment(date)
       .locale(this.lang)
       .format(format);
+  }
+
+  toUTC(date, format) {
+    return new Date(moment(date).format(`${format} UTC`))
   }
 
   /**
@@ -150,6 +151,23 @@ export default class {
       .locale(this.lang)
       .startOf(of)
       .toDate();
+  }
+
+  /**
+   * Get Start Of A Date in UTC time zone. refer to moment documentation
+   *
+   * @param {Date} date
+   * @param {String} of
+   * @returns {Date}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  UTCstartOf(date, of, format) {
+    const startOf = moment(date)
+      .locale(this.lang)
+      .startOf(of)
+      .toDate();
+
+    return this.toUTC(startOf, format);
   }
 
   /**
@@ -312,5 +330,12 @@ export default class {
   // eslint-disable-next-line class-methods-use-this
   year(date) {
     return moment(date).year();
+  }
+
+  formattedHourToSeconds(time) {
+    if (!time) return 0;
+
+    const [hours, minutes] = time.split(":");
+    return (+hours) * 3600 + (+minutes) * 60;
   }
 }

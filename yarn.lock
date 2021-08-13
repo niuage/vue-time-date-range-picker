@@ -2,3 +2,7 @@
 # yarn lockfile v1
 
 
+vue-time-date-range-picker-vue3@1.4.15:
+  version "1.4.15"
+  resolved "https://registry.yarnpkg.com/vue-time-date-range-picker-vue3/-/vue-time-date-range-picker-vue3-1.4.15.tgz#e4eea4f35fa9ffa3e4e0310ddce332c43ca43d07"
+  integrity sha512-EwileGETCqUgkS03/RYBj3v5cIwnZz9kpvffVLds883GOzL8YUQbd3qxO2hZX6+vPOy4zyP5xdhDpAmonT9j2w==

@@ -16,10 +16,13 @@
       @on-click="onClickDateInput"
     />
     <calendar-dialog
-      v-show="showingCalendarDialog"
+      v-show="showCalendarDialog"
+      v-model:applyChanges="applyChanges"
+      :format="format"
       :language="language"
       :inline="inline"
       :initialDates="initialDates"
+      :defaultTimes="defaultTimes"
       :disabledDates="disabledDates"
       :showHelperButtons="showHelperButtons"
       :helperButtons="helperButtons"
@@ -46,7 +49,7 @@ import DateUtil from '../Utils/DateUtil';
 import DateInput from './DateInput.vue';
 import CalendarDialog from './CalendarDialog.vue';
 
-import { computed, toRefs, ref } from 'vue';
+import { computed, toRefs, ref, watch } from 'vue';
 
   const props = defineProps({
     initialDates: {
@@ -55,6 +58,10 @@ import { computed, toRefs, ref } from 'vue';
       default() {
         return [];
       },
+    },
+    showCalendarDialog: {
+      type: Boolean,
+      default: false
     },
     inline: {
       type: Boolean,
@@ -66,14 +73,14 @@ import { computed, toRefs, ref } from 'vue';
     },
     format: {
       type: String,
-      default: 'DD/MM/YYYY HH:mm',
+      default: 'MM/DD/YYYY HH:mm',
     },
     sameDateFormat: {
       type: Object,
       validator: PropsValidator.isValidSameDateFormat,
       default() {
         return {
-          from: 'DD/MM/YYYY, HH:mm',
+          from: 'MM/DD/YYYY, HH:mm',
           to: 'HH:mm',
         };
       },
@@ -83,6 +90,16 @@ import { computed, toRefs, ref } from 'vue';
       default() {
         return {};
       },
+    },
+    defaultTimes: {
+      type: Object,
+      validator: PropsValidator.isValidTimeFormat,
+      default() {
+        return {
+          start: '0:00',
+          end: '0:00'
+        }
+      }
     },
     disabledDates: Object,
     showHelperButtons: Boolean,
@@ -97,7 +114,16 @@ import { computed, toRefs, ref } from 'vue';
   });
 
   const { inline } = toRefs(props);
-  const showCalendarDialog = ref(inline.value);
+  const showCalendarDialog = computed({
+    get: () => props.inline ? false : props.showCalendarDialog,
+    set: (value) => emit("update:showCalendarDialog", value)
+  });
+
+  const applyChanges = ref(false);
+  watch(showCalendarDialog, (show) => {
+    // apply changes on close
+    if (!show) applyChanges.value = true;
+  })
 
   const [fromDate, toDate] = props.initialDates;
   const selectedStartDate = ref(fromDate ?? null);
@@ -105,7 +131,6 @@ import { computed, toRefs, ref } from 'vue';
 
   const dateUtil = computed(() => new DateUtil(props.language));
   const showingDateInput = computed(() => !props.inline);
-  const showingCalendarDialog = computed(() => showCalendarDialog.value || props.inline);
 
   const onApply = (date1, date2) => {
     if (!date1 || !date2) return false;
@@ -144,7 +169,8 @@ import { computed, toRefs, ref } from 'vue';
     'select-date',
     'datepicker-opened',
     'datepicker-closed',
-    'date-applied'
+    'date-applied',
+    'update:showCalendarDialog'
   ]);
 
   const datePickerClosed = () => emit('datepicker-closed');
