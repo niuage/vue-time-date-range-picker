@@ -227,10 +227,13 @@
   };
 
   const selectDate = (day) => {
+    console.log("Selecting: ", day);
+
     if (day.isDisabled) {
       emit('select-disabled-date', day.date);
     }
 
+    console.log("select-date: ", dateUtil.value.toUTC(day.date, props.format));
     return emit('select-date', dateUtil.value.toUTC(day.date, props.format));
   };
 

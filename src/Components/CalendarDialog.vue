@@ -369,22 +369,27 @@ import { computed, ref, toRefs, watch } from 'vue';
       && dateUtil.value.isSameDate(startDate, endDate)
       && hasSelectedDate
     ) {
-      const endDateBeforeStartDate = dateUtil.value.isSameOrBefore(date, selectedStartDate.value);
+      console.log("selecting end date");
       endDate = date;
       applyOrSwapApply(startDate, endDate);
 
       selectedStartDate.value = dateUtil.value.UTCstartOf(selectedStartDate.value, 'd', props.format);
       selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
+      console.log("selected start: ", selectedStartDate.value);
 
       selectedEndDate.value = dateUtil.value.UTCstartOf(selectedEndDate.value, 'd', props.format);
       selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
+      console.log("selected end: ", selectedEndDate.value);
     } else {
       startDate = date;
       endDate = date;
       applyOrSwapApply(startDate, endDate);
 
+      console.log("selecting start date");
       selectedStartDate.value = dateUtil.value.fromUnix(unixSelectedStartDate.value + defaultStartTime.value);
       selectedEndDate.value = dateUtil.value.fromUnix(unixSelectedEndDate.value + defaultEndTime.value);
+      console.log("selected start: ", selectedStartDate.value);
+      console.log("selected end: ", selectedEndDate.value);
     }
 
     hasSelectedDate = true;
